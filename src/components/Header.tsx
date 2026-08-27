@@ -38,6 +38,8 @@ interface HeaderProps {
   onExportCSV?: () => void;
   onExportJson?: () => void;
   onExportJSON?: () => void;
+  onExportWorkspace?: () => void;
+  onImportWorkspaceFile?: (file: File) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -61,9 +63,12 @@ export const Header: React.FC<HeaderProps> = ({
   onExportCsv,
   onExportCSV,
   onExportJson,
-  onExportJSON
+  onExportJSON,
+  onExportWorkspace,
+  onImportWorkspaceFile
 }) => {
   const [showExportMenu, setShowExportMenu] = React.useState(false);
+  const workspaceInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const safeJournals = journals || [];
   const totalJournals = totalJournalsCount ?? safeJournals.length;
@@ -219,6 +224,43 @@ export const Header: React.FC<HeaderProps> = ({
                   <Database className="w-4 h-4 text-indigo-400" />
                   JSON (.json)
                 </button>
+                <div className="border-t border-slate-800 my-1"></div>
+                {onExportWorkspace && (
+                  <button
+                    id="btn-export-workspace"
+                    onClick={() => { onExportWorkspace(); setShowExportMenu(false); }}
+                    className="w-full text-left px-3.5 py-2 text-xs text-amber-300 hover:bg-slate-800 flex items-center gap-2 cursor-pointer font-semibold"
+                    title="Export complete database workspace, edits, notes & registries"
+                  >
+                    <Download className="w-4 h-4 text-amber-400" />
+                    Export Backup (.json)
+                  </button>
+                )}
+                {onImportWorkspaceFile && (
+                  <>
+                    <input
+                      ref={workspaceInputRef}
+                      type="file"
+                      accept=".json"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          onImportWorkspaceFile(e.target.files[0]);
+                          setShowExportMenu(false);
+                        }
+                      }}
+                    />
+                    <button
+                      id="btn-import-workspace"
+                      onClick={() => workspaceInputRef.current?.click()}
+                      className="w-full text-left px-3.5 py-2 text-xs text-emerald-300 hover:bg-slate-800 flex items-center gap-2 cursor-pointer font-semibold"
+                      title="Restore previously saved workspace backup with all edits & notes"
+                    >
+                      <UploadCloud className="w-4 h-4 text-emerald-400" />
+                      Restore Backup (.json)
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>

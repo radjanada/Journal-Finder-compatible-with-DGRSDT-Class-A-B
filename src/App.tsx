@@ -557,6 +557,48 @@ export function App() {
     showToast(`Exported ${filteredJournals.length} journals to JSON.`, 'success');
   };
 
+  const handleExportWorkspace = () => {
+    const backup = {
+      version: 1,
+      exportDate: new Date().toISOString(),
+      journals,
+      classARegistry,
+      classBRegistry,
+      shortlistedIds
+    };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `scholar_lens_workspace_backup_${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    showToast('Successfully exported complete workspace database, edits & notes!', 'success');
+  };
+
+  const handleImportWorkspace = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const backup = JSON.parse(content);
+        if (backup && Array.isArray(backup.journals)) {
+          setJournals(backup.journals);
+          if (Array.isArray(backup.classARegistry)) setClassARegistry(backup.classARegistry);
+          if (Array.isArray(backup.classBRegistry)) setClassBRegistry(backup.classBRegistry);
+          if (Array.isArray(backup.shortlistedIds)) setShortlistedIds(backup.shortlistedIds);
+          showToast(`Successfully restored workspace backup with ${backup.journals.length} journals and all edits/notes!`, 'success');
+        } else {
+          showToast('Invalid backup file format.', 'info');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Error parsing workspace backup JSON.', 'info');
+      }
+    };
+    reader.readAsText(file);
+  };
+
   const comparedJournalsList = React.useMemo(() => {
     return journals.filter(j => selectedForCompare.includes(j.id));
   }, [journals, selectedForCompare]);
@@ -593,6 +635,8 @@ export function App() {
         onExportExcel={handleExportExcel}
         onExportCsv={handleExportCSV}
         onExportJson={handleExportJSON}
+        onExportWorkspace={handleExportWorkspace}
+        onImportWorkspaceFile={handleImportWorkspace}
       />
 
       {/* Main Workspace: Sidebar Filters & Results Table/Grid */}

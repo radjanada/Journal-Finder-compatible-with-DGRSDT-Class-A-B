@@ -255,13 +255,17 @@ export const JournalTable: React.FC<JournalTableProps> = ({
                       <td className="py-2.5 px-3">
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <button
+                            <a
                               id={`btn-title-${journal.id}`}
-                              onClick={() => onViewJournalDetails(journal)}
-                              className="font-bold text-blue-600 hover:text-blue-800 text-left text-xs transition-colors block cursor-pointer"
+                              href={`https://www.google.com/search?q=${encodeURIComponent(journal.title + ' Impact factor')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-bold text-blue-600 hover:text-blue-800 hover:underline text-left text-xs transition-colors flex items-center gap-1 cursor-pointer"
+                              title={`Click to search "${journal.title} Impact factor" on Google`}
                             >
-                              {journal.title}
-                            </button>
+                              <span>{journal.title}</span>
+                              <ExternalLink className="w-3 h-3 text-blue-400 shrink-0" />
+                            </a>
                             {journal.homePageUrl && (
                               <a
                                 href={journal.homePageUrl}
@@ -517,12 +521,16 @@ export const JournalTable: React.FC<JournalTableProps> = ({
 
                   {/* Title & Publisher */}
                   <div className="flex items-start justify-between gap-1.5 mb-1">
-                    <h4 
-                      onClick={() => onViewJournalDetails(journal)}
-                      className="font-bold text-blue-600 hover:text-blue-800 transition-colors text-xs line-clamp-2 cursor-pointer"
+                    <a 
+                      href={`https://www.google.com/search?q=${encodeURIComponent(journal.title + ' Impact factor')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors text-xs line-clamp-2 flex items-center gap-1 cursor-pointer"
+                      title={`Click to search "${journal.title} Impact factor" on Google`}
                     >
-                      {journal.title}
-                    </h4>
+                      <span>{journal.title}</span>
+                      <ExternalLink className="w-3 h-3 text-blue-400 shrink-0" />
+                    </a>
                     <div className="flex items-center gap-1 shrink-0">
                       {journal.homePageUrl && (
                         <a
