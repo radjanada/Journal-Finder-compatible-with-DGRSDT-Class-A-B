@@ -1,0 +1,8 @@
+{
+  "name": "Journal Scope & Submission Finder",
+  "description": "Upload Scopus/WoS lists, compare Class A & B journal databases, match manuscripts with AI, and retrieve live metrics, APC fees, waivers, and decision times.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
